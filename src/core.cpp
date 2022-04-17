@@ -576,7 +576,7 @@ int send_reinit_filters(MusicHandle* handle) {
     return handle->have_err ? handle->err : FFMPEG_CORE_ERR_OK;
 }
 
-FfmpegCoreSettings* ffmpeg_core_init_settings() {
+FfmpegCoreSettings* ffmpeg_core_init_settings2() {
     FfmpegCoreSettings* s = (FfmpegCoreSettings*)malloc(sizeof(FfmpegCoreSettings));
     if (!s) return nullptr;
     memset(s, 0, sizeof(FfmpegCoreSettings));
@@ -585,6 +585,30 @@ FfmpegCoreSettings* ffmpeg_core_init_settings() {
     s->cache_length = 15;
     s->max_retry_count = 3;
     s->url_retry_interval = 5;
+    return s;
+}
+
+FfmpegCoreSettings* ffmpeg_core_init_settings() {
+    FfmpegCoreSettings* s = (FfmpegCoreSettings*)malloc(sizeof(FfmpegCoreSettings));
+    AechoSetting* aecho_s = (AechoSetting*)malloc(sizeof(AechoSetting));
+    c_linked_list* delays = NULL;
+    c_linked_list* decays = NULL;
+    float a[1] = {60};
+    float b[1] = { 0.8 };
+    c_linked_list_append(&delays, a);
+    c_linked_list_append(&decays, b);
+    if (!s) return nullptr;
+    memset(s, 0, sizeof(FfmpegCoreSettings));
+    s->speed = 1.0;
+    s->volume = 100;
+    s->cache_length = 15;
+    s->max_retry_count = 3;
+    s->url_retry_interval = 5;
+    s->aecho_setting = aecho_s;
+    s->aecho_setting->in_gain = 0.8;
+    s->aecho_setting->out_gain = 0.88;
+    s->aecho_setting->delays = delays;
+    s->aecho_setting->decays = decays;
     return s;
 }
 
@@ -613,6 +637,7 @@ int ffmpeg_core_settings_set_speed(FfmpegCoreSettings* s, float speed) {
     }
     return 0;
 }
+
 
 int ffmpeg_core_set_speed(MusicHandle* handle, float speed) {
     if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;

@@ -55,6 +55,13 @@ EqualizerChannel d;
 struct EqualizerChannels* prev;
 struct EqualizerChannels* next;
 } EqualizerChannels;
+
+typedef struct AechoSetting {
+	float in_gain;
+	float out_gain;
+	c_linked_list* delays;
+	c_linked_list* decays;
+} AechoSetting;
 #if HAVE_WASAPI
 typedef struct WASAPIHandle WASAPIHandle;
 #endif
@@ -187,6 +194,7 @@ int max_retry_count;
 int url_retry_interval;
 /// 均衡器
 EqualizerChannels* equalizer_channels;
+AechoSetting* aecho_setting;
 #if HAVE_WASAPI
 /// 是否使用WASAPI
 unsigned char use_wasapi : 1;

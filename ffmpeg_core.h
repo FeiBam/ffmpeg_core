@@ -50,6 +50,7 @@ struct DeviceNameList* next;
 #define FFMPEG_CORE_ERR_INVALID_DEVICE_NAME 25
 #define FFMPEG_CORE_ERR_WASAPI_NO_SUITABLE_FORMAT 26
 #define FFMPEG_CORE_ERR_FAILED_CREATE_EVENT 27
+#define FFMPEG_CORE_ERR_INVALID_PARAMS 28
 FFMPEG_CORE_API void free_music_handle(MusicHandle* handle);
 FFMPEG_CORE_API void free_music_info_handle(MusicInfoHandle* handle);
 FFMPEG_CORE_API void free_ffmpeg_core_settings(FfmpegCoreSettings* s);

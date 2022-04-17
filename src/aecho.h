@@ -7,7 +7,7 @@ extern "C" {
 #if !__cplusplus
 #include "core.h"
 #endif
-int create_aecho_fliter(int index, AVFilterGraph* graph, AVFilterContext* src, c_linked_list** list ,int in_gain, int out_gain, c_linked_list** delays, c_linked_list** decays);
+	int create_aecho_fliter(AVFilterGraph* graph, AVFilterContext* src, c_linked_list** list, float in_gain, float out_gain, c_linked_list** delays, c_linked_list** decays);
 #if __cplusplus
 }
 #endif

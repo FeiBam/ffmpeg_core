@@ -4,7 +4,7 @@
 #include "volume.h"
 #include "speed.h"
 #include "equalizer.h"
-
+#include "aecho.h"
 int need_filters(FfmpegCoreSettings* s) {
     if (!s) return 0;
 #if HAVE_WASAPI
@@ -22,12 +22,15 @@ int need_filters(FfmpegCoreSettings* s) {
     if (s->equalizer_channels && avfilter_get_by_name("equalizer")) {
         return 1;
     }
+    if (s->aecho_setting && avfilter_get_by_name("aecho")) {
+        return 0;
+    }
     return 0;
 }
 
 int init_filters(MusicHandle* handle) {
     if (!handle || !handle->s) return FFMPEG_CORE_ERR_NULLPTR;
-    if (!need_filters(handle->s)) return FFMPEG_CORE_ERR_OK;
+    //if (!need_filters(handle->s)) return FFMPEG_CORE_ERR_OK;
     int re = FFMPEG_CORE_ERR_OK;
     int is_easy_filters = 1;
     int speed = get_speed(handle->s->speed);
@@ -61,6 +64,12 @@ int init_filters(MusicHandle* handle) {
             }
         }
         is_easy_filters = 0;
+    }
+    AechoSetting* aecho_s = handle->s->aecho_setting;
+    if ((re = create_aecho_fliter(handle->graph, handle->filter_inp, &handle->filters, aecho_s->in_gain, aecho_s->out_gain, &aecho_s->delays, &aecho_s->decays))) {
+        return re;
+    }
+    if (handle->s->aecho_setting && avfilter_get_by_name("aecho")) {
     }
     if (c_linked_list_count(handle->filters) == 0) {
         avfilter_graph_free(&handle->graph);
